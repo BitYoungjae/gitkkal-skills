@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gitkkal Init"
+  short_description: "Initialize gitkkal settings for a repository"
+  default_prompt: "Use $gitkkal-init to configure gitkkal settings for this repository."

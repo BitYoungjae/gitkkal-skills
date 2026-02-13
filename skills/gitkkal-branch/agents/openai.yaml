@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gitkkal Branch"
+  short_description: "Create semantic branch names from change intent"
+  default_prompt: "Use $gitkkal-branch to suggest and create a branch name from current changes."

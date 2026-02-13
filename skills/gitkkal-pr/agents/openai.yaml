@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gitkkal PR"
+  short_description: "Create or update PRs from branch intent"
+  default_prompt: "Use $gitkkal-pr [hint] to draft or update the current branch pull request."

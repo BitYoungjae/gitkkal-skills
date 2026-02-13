@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gitkkal Commit"
+  short_description: "Plan and create semantic commits safely"
+  default_prompt: "Use $gitkkal-commit [hint] to plan commit groups and create commit messages."
