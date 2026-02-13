@@ -1,5 +1,7 @@
 # gitkkal-skills
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 > The name comes from the Korean expression "gikkal-nada", meaning "stylish" or "impressive."
 
 [한국어](./README.ko.md)
