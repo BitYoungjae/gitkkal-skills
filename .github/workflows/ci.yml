@@ -1,0 +1,65 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'skills/**'
+      - 'adapters/**'
+      - 'scripts/**'
+      - '.github/workflows/ci.yml'
+      - '.github/workflows/release.yml'
+      - 'SKILL.md'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'skills/**'
+      - 'adapters/**'
+      - 'scripts/**'
+      - '.github/workflows/ci.yml'
+      - '.github/workflows/release.yml'
+      - 'SKILL.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate skills and adapters
+        run: bash scripts/validate.sh
+
+      - name: Lint shell scripts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          shellcheck scripts/*.sh
+
+  package-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Package skills (smoke check)
+        run: |
+          bash scripts/package.sh --output-dir dist
+          shopt -s nullglob
+          artifacts=(dist/*.tar.gz)
+          if [ ${#artifacts[@]} -eq 0 ]; then
+            echo "[error] no .tar.gz artifacts produced"
+            exit 1
+          fi
+          echo "[ok] produced ${#artifacts[@]} artifact(s)"

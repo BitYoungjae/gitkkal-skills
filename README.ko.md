@@ -1,5 +1,7 @@
 # gitkkal-skills
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 > 한국어 표현 "기깔나다"에서 이름을 따왔습니다.
 
 [English](./README.md)
