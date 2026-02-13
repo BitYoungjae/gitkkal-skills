@@ -36,10 +36,10 @@ discover_skills() {
     exit 1
   fi
 
-  while IFS= read -r skill_dir; do
-    [ -z "$skill_dir" ] && continue
-    echo "$(basename "$skill_dir")"
-  done < <(find "$skills_root" -mindepth 1 -maxdepth 1 -type d | sort)
+while IFS= read -r skill_dir; do
+  [ -z "$skill_dir" ] && continue
+  printf '%s\n' "${skill_dir##*/}"
+done < <(find "$skills_root" -mindepth 1 -maxdepth 1 -type d | sort)
 }
 
 selected_skills=()
