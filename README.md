@@ -105,6 +105,21 @@ Install selected skills:
 bash adapters/codex/install.sh gitkkal-init gitkkal-commit
 ```
 
+## Update (Codex)
+
+Update installed skills by pulling the latest repository changes and reinstalling with `--force`:
+
+```bash
+git pull
+bash adapters/codex/install.sh --force
+```
+
+Update only selected skills:
+
+```bash
+bash adapters/codex/install.sh --force gitkkal-commit
+```
+
 ## Install (Claude)
 
 User scope (`~/.claude/skills`):

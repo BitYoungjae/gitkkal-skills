@@ -105,6 +105,21 @@ bash adapters/codex/install.sh
 bash adapters/codex/install.sh gitkkal-init gitkkal-commit
 ```
 
+## 업데이트 (Codex)
+
+설치된 스킬을 업데이트하려면 최신 변경사항을 받은 뒤 `--force`로 재설치하세요.
+
+```bash
+git pull
+bash adapters/codex/install.sh --force
+```
+
+일부 스킬만 업데이트:
+
+```bash
+bash adapters/codex/install.sh --force gitkkal-commit
+```
+
 ## 설치 (Claude)
 
 사용자 범위 (`~/.claude/skills`):

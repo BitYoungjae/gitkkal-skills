@@ -18,6 +18,13 @@ Analyze changes, prepare coherent commit groups, and create commit messages in c
 - If presenting a multiple-choice question, list choices as standalone lines (`1)`, `2)`, `3)`, ...).
   - Do not use Markdown ordered-list syntax (`1.`, `2.`, ...), and do not prefix question text with list numbers.
   - Restart numbering at `1)` for every question.
+- Run Git index-mutating commands sequentially only.
+  - Never execute `git add`, `git restore --staged`, `git reset`, `git rm --cached`, or `git commit` in parallel/background jobs.
+  - If parallel tool execution is available, use it only for read-only commands (status, diff, log, file inspection).
+- On `index.lock` errors, stop immediately and recover safely before retrying.
+  - Check whether `.git/index.lock` still exists and whether active Git processes are running.
+  - Remove the lock file only when no active Git process is using the repository.
+  - Retry the failed staging command once after recovery; if it fails again, report and ask the user.
 
 ## Input Model
 
@@ -53,6 +60,7 @@ Analyze changes, prepare coherent commit groups, and create commit messages in c
 - Use imperative tense and keep subject under 50 chars.
 9. Stage files explicitly.
 - Use file-by-file `git add <path>`.
+- Stage in a single sequential flow (for example, one shell script/loop in one command), not parallel calls.
 10. Commit using heredoc message construction.
 
 ## Guardrails
