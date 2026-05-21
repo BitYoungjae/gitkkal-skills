@@ -91,36 +91,47 @@ When `createPrTemplate=true`, `gitkkal-init` detects project maturity:
 
 Existing template files are never overwritten without explicit confirmation.
 
-## Install (Codex)
+## Install
 
-Install all skills:
+Each `SKILL.md` follows the [open Agent Skills specification](https://agentskills.io/specification), so any tool that adopts it (Codex, etc.) can discover the skills once they are dropped into the standard `.agents/skills/` directory. A separate adapter is provided for Claude Code, which reads from `.claude/skills/` instead.
+
+First, clone this repository locally:
 
 ```bash
-bash adapters/codex/install.sh
+git clone https://github.com/BitYoungjae/gitkkal-skills.git
+cd gitkkal-skills
+```
+
+Then run one of the adapter installers below. They copy each skill directory into the target location; nothing else on your system is touched.
+
+### Agents standard (`.agents/skills/`)
+
+User scope (`~/.agents/skills`):
+
+```bash
+bash adapters/agents/install.sh --scope user
+```
+
+Project scope (`<project>/.agents/skills`):
+
+```bash
+bash adapters/agents/install.sh --scope project --project-root /path/to/project
 ```
 
 Install selected skills:
 
 ```bash
-bash adapters/codex/install.sh gitkkal-init gitkkal-commit
+bash adapters/agents/install.sh --scope user gitkkal-init gitkkal-commit
 ```
 
-## Update (Codex)
-
-Update installed skills by pulling the latest repository changes and reinstalling with `--force`:
+Update by pulling latest and reinstalling with `--force`:
 
 ```bash
 git pull
-bash adapters/codex/install.sh --force
+bash adapters/agents/install.sh --scope user --force
 ```
 
-Update only selected skills:
-
-```bash
-bash adapters/codex/install.sh --force gitkkal-commit
-```
-
-## Install (Claude)
+### Claude Code (`.claude/skills/`)
 
 User scope (`~/.claude/skills`):
 
@@ -144,9 +155,9 @@ If `gh` is unavailable, `gitkkal-pr` falls back to generating PR title/body text
 ## Repository Structure
 
 ```text
-skills/                 # Portable skill definitions
-adapters/codex/         # Install helper for Codex
-adapters/claude/        # Install helper for Claude
+skills/                 # Portable skill definitions (open Agent Skills spec)
+adapters/agents/        # Installer for the standard `.agents/skills/` location
+adapters/claude/        # Installer for Claude Code (`.claude/skills/`)
 scripts/                # Validation and packaging helpers
 .github/workflows/      # Release automation
 ```

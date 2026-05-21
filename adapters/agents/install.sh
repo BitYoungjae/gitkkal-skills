@@ -3,18 +3,27 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 skills_root="$repo_root/skills"
-dest="${CODEX_HOME:-$HOME/.codex}/skills"
+scope="user"
+project_root=""
+dest=""
 force=0
 
 usage() {
   cat <<USAGE
-Usage: bash adapters/codex/install.sh [--dest PATH] [--force] [skill...]
+Usage: bash adapters/agents/install.sh [--scope user|project] [--project-root PATH] [--dest PATH] [--force] [skill...]
+
+Installs skills to the open Agent Skills standard location (\`.agents/skills/\`),
+recognized by Codex and other tools that follow the spec at https://agentskills.io.
+
+Default destinations:
+  user    \$HOME/.agents/skills
+  project <project-root>/.agents/skills
 
 Examples:
-  bash adapters/codex/install.sh
-  bash adapters/codex/install.sh gitkkal-init gitkkal-pr
-  bash adapters/codex/install.sh --dest /tmp/my-skills --force
-  bash adapters/codex/install.sh --force -- gitkkal-init
+  bash adapters/agents/install.sh --scope user
+  bash adapters/agents/install.sh --scope project --project-root /path/to/project
+  bash adapters/agents/install.sh --dest /tmp/agents-skills gitkkal-init
+  bash adapters/agents/install.sh --scope project --project-root /path/to/project -- gitkkal-pr
 USAGE
 }
 
@@ -46,6 +55,14 @@ discover_skills() {
 args=()
 while (($#)); do
   case "$1" in
+    --scope)
+      require_value "$1" "${2:-}"
+      scope="$2"
+      shift 2 ;;
+    --project-root)
+      require_value "$1" "${2:-}"
+      project_root="$2"
+      shift 2 ;;
     --dest)
       require_value "$1" "${2:-}"
       dest="$2"
@@ -70,15 +87,30 @@ while (($#)); do
   esac
 done
 
+if [ -z "$dest" ]; then
+  case "$scope" in
+    user)
+      dest="$HOME/.agents/skills" ;;
+    project)
+      if [ -z "$project_root" ]; then
+        error "--project-root is required when --scope project"
+        exit 1
+      fi
+      if [ ! -d "$project_root" ]; then
+        error "project root not found: $project_root"
+        exit 1
+      fi
+      dest="$project_root/.agents/skills" ;;
+    *)
+      error "invalid scope: $scope"
+      exit 1 ;;
+  esac
+fi
+
 if [ ${#args[@]} -eq 0 ]; then
   while IFS= read -r skill_name; do
     args+=("$skill_name")
   done < <(discover_skills)
-fi
-
-if [ -z "$dest" ]; then
-  error "destination is empty"
-  exit 1
 fi
 
 if [ ${#args[@]} -eq 0 ]; then
