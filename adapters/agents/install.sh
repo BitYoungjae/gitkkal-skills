@@ -6,6 +6,7 @@ skills_root="$repo_root/skills"
 scope="user"
 project_root=""
 dest=""
+dest_explicit=0
 force=0
 
 usage() {
@@ -18,6 +19,10 @@ recognized by Codex and other tools that follow the spec at https://agentskills.
 Default destinations:
   user    \$HOME/.agents/skills
   project <project-root>/.agents/skills
+
+When installing to the default user destination, matching skill directories
+under the legacy Codex path (\$CODEX_HOME/skills or \$HOME/.codex/skills) are
+removed so the rename does not leave orphaned copies behind.
 
 Examples:
   bash adapters/agents/install.sh --scope user
@@ -66,6 +71,7 @@ while (($#)); do
     --dest)
       require_value "$1" "${2:-}"
       dest="$2"
+      dest_explicit=1
       shift 2 ;;
     --force)
       force=1; shift ;;
@@ -121,6 +127,22 @@ fi
 mkdir -p "$dest"
 installed=()
 skipped=()
+cleaned=()
+
+# Legacy Codex skill paths to clean up after a successful install/skip.
+# Only applies when we're installing to the default user destination —
+# a custom --dest or --scope project means the user is opting out of
+# the standard rename migration.
+legacy_dirs=()
+if [ "$scope" = "user" ] && [ "$dest_explicit" -eq 0 ]; then
+  legacy_dirs+=("$HOME/.codex/skills")
+  if [ -n "${CODEX_HOME:-}" ]; then
+    codex_skills_dir="$CODEX_HOME/skills"
+    if [ "$codex_skills_dir" != "$HOME/.codex/skills" ]; then
+      legacy_dirs+=("$codex_skills_dir")
+    fi
+  fi
+fi
 
 for skill in "${args[@]}"; do
   src="$skills_root/$skill"
@@ -133,15 +155,26 @@ for skill in "${args[@]}"; do
   if [ -e "$dst" ] && [ "$force" -ne 1 ]; then
     skipped+=("$skill")
     echo "[skip] exists: $dst (use --force to overwrite)"
-    continue
+  else
+    rm -rf "$dst"
+    cp -R "$src" "$dst"
+    installed+=("$skill")
+    echo "[ok] installed: $skill -> $dst"
   fi
 
-  rm -rf "$dst"
-  cp -R "$src" "$dst"
-  installed+=("$skill")
-  echo "[ok] installed: $skill -> $dst"
+  if [ "${#legacy_dirs[@]}" -gt 0 ]; then
+    for legacy_dir in "${legacy_dirs[@]}"; do
+      legacy_path="$legacy_dir/$skill"
+      if [ -d "$legacy_path" ]; then
+        rm -rf "$legacy_path"
+        cleaned+=("$legacy_path")
+        echo "[cleanup] removed legacy: $legacy_path"
+      fi
+    done
+  fi
 done
 
 echo ""
 echo "Installed: ${#installed[@]}"
 echo "Skipped: ${#skipped[@]}"
+echo "Cleaned legacy: ${#cleaned[@]}"
