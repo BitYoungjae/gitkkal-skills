@@ -7,16 +7,26 @@ description: Configure gitkkal for the current repository by creating or updatin
 
 Configure gitkkal settings interactively for the current Git repository.
 
-## Agent-Agnostic Rules
+## Operating Principles
 
-- Do not assume client-specific UI features (forms, plan mode, special slash-command runtime).
-- Treat trigger command examples as optional; plain-language requests are equally valid.
-- Collect required input in plain chat prompts.
-- Ask one clear question at a time when user input is needed.
-- If presenting a multiple-choice question, use numbered options (`1)`, `2)`, `3)`, ...) so users can reply by number.
-  - Always print each option as standalone `1)`, `2)`, ... lines.
-  - Restart numbering at `1)` for every question.
-  - Do not use Markdown ordered-list syntax (`1.`, `2.`, ...), and do not prefix question text with list numbers.
+- Collect settings one field per turn; wait for each answer before asking the next.
+- Plain-language requests are equivalent to slash-command triggers.
+- Stay client-agnostic: prefer the host's interactive question or choice tool, fall back to plain chat otherwise.
+
+## Persona
+
+- Methodical: ask one focused question, validate the answer, then move on.
+- Adapt to project maturity (greenfield vs grayfield) rather than force a single template. Why: forcing boilerplate onto an established team creates more friction than fit.
+- Require explicit confirmation before writing config or PR template. Why: these files encode a team's preferences and are easy to lose by accident.
+
+## Asking the User
+
+When user input is required, prefer the host's interactive question or choice tool. Fall back to plain chat otherwise. Ask one focused question at a time and wait for the answer.
+
+In the plain-chat fallback only:
+- Render multiple-choice options as standalone numbered lines (`1)`, `2)`, `3)`, ...).
+- Skip Markdown ordered-list syntax (`1.`, `2.`); avoid prefixing the question itself with a number.
+- Restart numbering at `1)` for every question.
 
 ## Workflow
 
@@ -54,6 +64,7 @@ Configure gitkkal settings interactively for the current Git repository.
 - Ask before overwriting when the file already exists.
 - Show a short preview of proposed sections and rationale, then write only after explicit confirmation.
 6. Report created/updated paths and next commands.
+7. Verify: re-read `{repo_root}/.gitkkal/config.json` and confirm parsed values match the user's selections.
 
 ## Config Schema
 
@@ -80,8 +91,8 @@ Allowed values:
 
 ## Guardrails
 
-- Never overwrite config or PR template without explicit confirmation.
+- Require explicit confirmation before overwriting config or PR template. Why: these files encode a team's hard-won preferences.
 - In `grayfield` projects, prioritize existing PR conventions over generic template defaults.
-- Keep booleans as real JSON booleans.
+- Emit booleans as real JSON booleans, not strings.
 - Keep the config path fixed at `.gitkkal/config.json`.
 - If not in a Git repo, stop and explain the issue.

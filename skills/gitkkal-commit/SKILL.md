@@ -7,24 +7,38 @@ description: Generate and execute high-quality Git commits based on semantic cha
 
 Analyze changes, prepare coherent commit groups, and create commit messages in configured style.
 
-## Agent-Agnostic Rules
+## Operating Principles
 
-- Do not assume client-specific UI features (forms, plan mode, special slash-command runtime).
-- Treat trigger command examples as optional; plain-language requests are equally valid.
-- Use a hint-first input model: accept one optional free-form hint string (for example, command tail text).
-- Do not require strict named parameters for normal usage.
-- If intent/grouping is unclear, ask in plain chat.
-- Ask one clear follow-up at a time for unresolved decisions.
-- If presenting a multiple-choice question, list choices as standalone lines (`1)`, `2)`, `3)`, ...).
-  - Do not use Markdown ordered-list syntax (`1.`, `2.`, ...), and do not prefix question text with list numbers.
-  - Restart numbering at `1)` for every question.
+- Accept one optional free-form hint (e.g., command tail text); treat as advisory, not a hard constraint.
+- Plain-language requests are equivalent to slash-command triggers.
+- Stay client-agnostic: prefer the host's interactive question or choice tool, fall back to plain chat otherwise.
+
+## Persona
+
+- Methodical: surface the commit plan before staging, then execute it.
+- When hint conflicts with code evidence, ask one clarification rather than override the diff. Why: commits become permanent history.
+- Treat the Git index as shared state — mutations are sequential, never parallel.
+
+## Index Safety
+
 - Run Git index-mutating commands sequentially only.
-  - Never execute `git add`, `git restore --staged`, `git reset`, `git rm --cached`, or `git commit` in parallel/background jobs.
-  - If parallel tool execution is available, use it only for read-only commands (status, diff, log, file inspection).
+- `git add`, `git restore --staged`, `git reset`, `git rm --cached`, and `git commit` must not run in parallel or background jobs.
+- Parallel tool execution is fine for read-only commands (status, diff, log, file inspection).
 - On `index.lock` errors, stop immediately and recover safely before retrying.
-  - Check whether `.git/index.lock` still exists and whether active Git processes are running.
-  - Remove the lock file only when no active Git process is using the repository.
-  - Retry the failed staging command once after recovery; if it fails again, report and ask the user.
+- Check whether `.git/index.lock` still exists and whether active Git processes are running.
+- Remove the lock file only when no active Git process is using the repository.
+- Retry the failed staging command once after recovery; if it fails again, report and ask the user.
+
+Why: Git's index is a single shared file. Concurrent mutations corrupt it; sequential staging avoids that class of failure cheaply.
+
+## Asking the User
+
+When user input is required (unclear intent, unclear commit grouping, confirming the commit plan), prefer the host's interactive question or choice tool. Fall back to plain chat otherwise. Ask one focused question at a time and wait for the answer.
+
+In the plain-chat fallback only:
+- Render multiple-choice options as standalone numbered lines (`1)`, `2)`, `3)`, ...).
+- Skip Markdown ordered-list syntax (`1.`, `2.`); avoid prefixing the question itself with a number.
+- Restart numbering at `1)` for every question.
 
 ## Input Model
 
@@ -57,16 +71,17 @@ Analyze changes, prepare coherent commit groups, and create commit messages in c
 - `conventional`: `<type>[(scope)]: <description>`
 - `gitmoji`: `<emoji> <description>`
 - `simple`: `<description>`
-- Use imperative tense and keep subject under 50 chars.
+- Use imperative tense; cap subject at 50 chars.
 9. Stage files explicitly.
 - Use file-by-file `git add <path>`.
-- Stage in a single sequential flow (for example, one shell script/loop in one command), not parallel calls.
+- Stage in a single sequential flow (one shell script/loop in one command), never parallel calls.
 10. Commit using heredoc message construction.
+11. Verify: run `git log -1 --oneline` after each commit and report the subjects that landed.
 
 ## Guardrails
 
-- Never run `git add .` or `git add -A`.
-- Never run `git commit --amend`; create new commits instead.
-- Never include `Co-Authored-By` lines.
+- Stage explicit paths only. Why: `git add .` and `git add -A` can sweep in `.env` or generated files no one wanted in history.
+- Create new commits rather than amending. Why: amend rewrites history; new commits are reversible.
+- Skip `Co-Authored-By` lines in messages.
 - If there are no changes, stop with `No changes to commit.`
-- If merge conflicts exist, ask user to resolve before committing.
+- If merge conflicts exist, ask the user to resolve before committing.
