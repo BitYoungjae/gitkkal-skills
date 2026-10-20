@@ -114,6 +114,8 @@ npx skills add BitYoungjae/gitkkal-skills
 
 The CLI detects the agents installed on your machine and installs into each agent's skill directory (`.agents/skills/`, `.claude/skills/`, and more). Use `--skill <name>` to install specific skills, `-g` for user-level install, and `npx skills update` to refresh later. Installs are recorded in `skills-lock.json` for reproducible updates.
 
+> **Install all five skills together.** `gitkkal-ship` loads `gitkkal-branch`, `gitkkal-commit`, and `gitkkal-pr` from adjacent skill directories, so a partial install (via `--skill` or the interactive picker) breaks the orchestrator.
+
 ### Adapter installers
 
 First, clone this repository locally:

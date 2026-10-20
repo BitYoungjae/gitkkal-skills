@@ -110,6 +110,8 @@ npx skills add BitYoungjae/gitkkal-skills
 
 CLI가 설치된 에이전트를 자동 감지해 각 에이전트의 스킬 디렉토리(`.agents/skills/`, `.claude/skills/` 등)에 설치합니다. `--skill <name>`으로 특정 스킬만 설치, `-g`로 사용자 레벨 설치, 이후 `npx skills update`로 업데이트할 수 있고 설치 내역은 `skills-lock.json`에 기록됩니다.
 
+> **다섯 스킬을 함께 설치하세요.** `gitkkal-ship`는 인접 스킬 디렉토리에서 `gitkkal-branch`·`gitkkal-commit`·`gitkkal-pr`를 로드하므로, 일부만 설치하면(`--skill` 또는 대화형 선택) 오케스트레이터가 동작하지 않습니다.
+
 ### 어댑터 설치 스크립트
 
 먼저 저장소를 로컬에 클론합니다.
