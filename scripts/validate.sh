@@ -96,6 +96,12 @@ validate_skill() {
       echo "[error] $skill_name: \`description\` exceeds 1024 chars (${#desc})"
       skill_ok=0
     fi
+    # YAML safety: an unquoted scalar containing ": " parses as a nested
+    # mapping and is rejected by real YAML parsers (e.g. the skills CLI).
+    if [[ "$desc" != '"'* && "$desc" != "'"* && "$desc" == *": "* ]]; then
+      echo "[error] $skill_name: unquoted \`description\` contains ': ' (YAML parse error) — quote the value or rephrase"
+      skill_ok=0
+    fi
   fi
 
   if [ "$skill_ok" -eq 1 ]; then
