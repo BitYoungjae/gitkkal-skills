@@ -1,6 +1,6 @@
 ---
 name: gitkkal-ship
-description: Ship changes end-to-end: create a branch first when on the default branch, then run the gitkkal-commit flow and the gitkkal-pr flow. Use when the user asks for `/gitkkal:ship` or `$gitkkal-ship`, says "commit and create a PR", "ship these changes", or "finish this branch", or wants semantic commits and a pull request in a single pass.
+description: Ship changes end-to-end — create a branch first when on the default branch, then run the gitkkal-commit flow and the gitkkal-pr flow. Use when the user asks for `/gitkkal:ship` or `$gitkkal-ship`, says "commit and create a PR", "ship these changes", or "finish this branch", or wants semantic commits and a pull request in a single pass.
 ---
 
 # Gitkkal Ship
