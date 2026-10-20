@@ -69,7 +69,7 @@ In the plain-chat fallback only:
 8. Execute action.
    - In normal mode:
      - Creation: push branch if needed, then `gh pr create --title ... --body ...`.
-     - Update: fully replace existing title/body with `gh pr edit`.
+     - Update: push branch if needed, then fully replace existing title/body with `gh pr edit`.
    - In fallback mode:
      - return final title/body text and command snippets only.
 9. Report resulting PR number, URL, and mode (created or updated).
