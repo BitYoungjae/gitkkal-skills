@@ -104,6 +104,18 @@ Existing template files are never overwritten without explicit confirmation.
 
 Each `SKILL.md` follows the [open Agent Skills specification](https://agentskills.io/specification), so any tool that adopts it (Codex, etc.) can discover the skills once they are dropped into the standard `.agents/skills/` directory. A separate adapter is provided for Claude Code, which reads from `.claude/skills/` instead.
 
+### skills CLI (any agent)
+
+The quickest path — no clone needed. Requires Node.js 22+:
+
+```bash
+npx skills add BitYoungjae/gitkkal-skills
+```
+
+The CLI detects the agents installed on your machine and installs into each agent's skill directory (`.agents/skills/`, `.claude/skills/`, and more). Use `--skill <name>` to install specific skills, `-g` for user-level install, and `npx skills update` to refresh later. Installs are recorded in `skills-lock.json` for reproducible updates.
+
+### Adapter installers
+
 First, clone this repository locally:
 
 ```bash
@@ -113,7 +125,7 @@ cd gitkkal-skills
 
 Then run one of the adapter installers below. They copy each skill directory into the target location; nothing else on your system is touched.
 
-### Agents standard (`.agents/skills/`)
+#### Agents standard (`.agents/skills/`)
 
 User scope (`~/.agents/skills`):
 
@@ -140,7 +152,7 @@ git pull
 bash adapters/agents/install.sh --scope user --force
 ```
 
-### Claude Code (`.claude/skills/`)
+#### Claude Code (`.claude/skills/`)
 
 User scope (`~/.claude/skills`):
 

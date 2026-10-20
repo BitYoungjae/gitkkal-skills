@@ -100,6 +100,18 @@ gitkkal-ship wrap up validation and tests
 
 각 `SKILL.md`는 [Open Agent Skills 표준](https://agentskills.io/specification)을 따릅니다. 표준을 채택한 도구(Codex 등)는 `.agents/skills/` 경로에 스킬이 설치되면 자동으로 인식합니다. Claude Code는 `.claude/skills/`를 사용하므로 별도 어댑터를 제공합니다.
 
+### skills CLI (모든 에이전트)
+
+가장 빠른 방법 — 클론이 필요 없습니다. Node.js 22+ 필요:
+
+```bash
+npx skills add BitYoungjae/gitkkal-skills
+```
+
+CLI가 설치된 에이전트를 자동 감지해 각 에이전트의 스킬 디렉토리(`.agents/skills/`, `.claude/skills/` 등)에 설치합니다. `--skill <name>`으로 특정 스킬만 설치, `-g`로 사용자 레벨 설치, 이후 `npx skills update`로 업데이트할 수 있고 설치 내역은 `skills-lock.json`에 기록됩니다.
+
+### 어댑터 설치 스크립트
+
 먼저 저장소를 로컬에 클론합니다.
 
 ```bash
@@ -109,7 +121,7 @@ cd gitkkal-skills
 
 그다음 아래 어댑터 설치 스크립트 중 하나를 실행하세요. 각 스킬 디렉토리를 지정 위치로 복사할 뿐, 시스템의 다른 부분은 건드리지 않습니다.
 
-### 에이전트 표준 (`.agents/skills/`)
+#### 에이전트 표준 (`.agents/skills/`)
 
 사용자 범위 (`~/.agents/skills`):
 
@@ -136,7 +148,7 @@ git pull
 bash adapters/agents/install.sh --scope user --force
 ```
 
-### Claude Code (`.claude/skills/`)
+#### Claude Code (`.claude/skills/`)
 
 사용자 범위 (`~/.claude/skills`):
 
