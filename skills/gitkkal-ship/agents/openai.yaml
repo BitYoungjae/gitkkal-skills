@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gitkkal Ship"
+  short_description: "Commit and open a PR in one pass"
+  default_prompt: "Use $gitkkal-ship [hint] to land commits and then open or update the pull request."
