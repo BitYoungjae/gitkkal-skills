@@ -34,9 +34,9 @@ In the plain-chat fallback only:
 - If missing, use defaults: `language=en`, `branchPattern=type/description`.
 2. Handle user argument.
 - If a branch description argument is provided, use it directly and skip diff analysis.
-3. If no argument, inspect current changes.
-- Run `git status --short`, `git diff`, and `git diff --cached`.
-- If there are no changes, ask the user for a short branch description.
+3. If no argument, establish what changed.
+- Prefer what this session already knows about the working tree; run `git status --short` when freshness is uncertain, and read diffs (`git diff`, `git diff --cached`) only for files the session has not seen. Why: re-reading diffs the session just produced adds cost, not information.
+- If there are no changes and the session reveals no intent, ask the user for a short branch description.
 4. Infer semantic intent from actual diff content.
 - Focus on why the change exists, not file counts.
 - If intent is unclear, ask for clarification instead of guessing.

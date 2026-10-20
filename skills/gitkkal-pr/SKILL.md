@@ -55,10 +55,10 @@ In the plain-chat fallback only:
 5. Validate branch safety.
    - Disallow PR creation from `main` or `master`.
    - Never use `git push --force`.
-6. Analyze branch intent using staged escalation; stop as soon as purpose is clear.
-   - Step 1: Read commit messages and `git diff --stat` from base to `HEAD`. If purpose is clear, proceed.
-   - Step 2: Otherwise, read targeted file-level diffs only for the files whose intent is ambiguous.
-   - Step 3: If purpose is still unclear after reading diffs, ask the user for the PR's primary focus before writing. Do not guess.
+6. Analyze branch intent; stop as soon as purpose is clear.
+   - Start from what this session already knows — commits it just authored usually speak for the whole branch (this is the normal case inside gitkkal-ship). Why: reading git history the session just wrote adds cost, not information.
+   - Otherwise escalate through reads: commit messages and `git diff --stat` from base to `HEAD`, then targeted file-level diffs for files whose intent stays ambiguous.
+   - If purpose is still unclear, ask the user for the PR's primary focus before writing. Do not guess.
    - Focus on purpose and impact rather than listing files.
    - Classify the change into one of three categories before writing (see Change Categories below).
 7. Build PR content.

@@ -53,8 +53,9 @@ In the plain-chat fallback only:
 - If missing, use defaults: `language=en`, `commitPattern=conventional`, `splitCommits=true`, `askOnAmbiguity=true`.
 2. Capture optional hint input.
 - Read user-provided free-form hint if present.
-3. Gather change context.
-- Run `git status --short`, `git diff --cached`, `git diff`, and `git log --oneline -5`.
+3. Establish change context.
+- Prefer what this session already knows about the changes; run `git status --short` when freshness is uncertain, and read targeted diffs (`git diff`, `git diff --cached`) only for files the session has not seen. Why: re-reading diffs the session just produced adds cost, not information.
+- Read `git log --oneline -5` only when recent commit style or intent is not already in context.
 4. Exclude sensitive files from candidate staging.
 - Exclude secrets like `.env`, credential files, private keys, tokens.
 5. Infer semantic intent from code changes.
