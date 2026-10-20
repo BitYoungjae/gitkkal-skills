@@ -14,6 +14,7 @@ Codex, Claude 같은 특정 도구에 종속되지 않는, 브랜치 명명·커
 - `gitkkal-branch`: 코드 변경이나 힌트를 바탕으로 의미 있는 브랜치 이름 생성
 - `gitkkal-commit`: 설정한 메시지 스타일로 의미 단위 커밋 생성
 - `gitkkal-pr`: 브랜치 의도와 변경 내역 기반으로 PR 생성/업데이트
+- `gitkkal-ship`: `gitkkal-commit`과 `gitkkal-pr`를 순서대로 로드해 커밋과 PR을 한 번에 진행
 
 ## 빠른 시작
 
@@ -24,6 +25,7 @@ gitkkal-init
 gitkkal-branch [description]
 gitkkal-commit [hint]
 gitkkal-pr [hint]
+gitkkal-ship [hint]
 ```
 
 예시:
@@ -33,6 +35,7 @@ gitkkal-init
 gitkkal-branch add user authentication
 gitkkal-commit emphasize validation and tests
 gitkkal-pr focus on retry logic and error handling
+gitkkal-ship wrap up validation and tests
 ```
 
 ## 기본 워크플로우
@@ -46,9 +49,11 @@ gitkkal-pr focus on retry logic and error handling
 4. 추가 커밋 후 같은 PR 갱신:
    - `gitkkal-pr emphasize refactoring scope`
 
+2~3단계는 `gitkkal-ship` 하나로 묶어 실행할 수 있습니다. 두 스킬을 순서대로 로드해 진행합니다.
+
 ## 힌트 중심 동작
 
-- `gitkkal-branch`, `gitkkal-commit`, `gitkkal-pr`는 선택적으로 자유 형식의 단일 힌트를 받습니다.
+- `gitkkal-branch`, `gitkkal-commit`, `gitkkal-pr`, `gitkkal-ship`는 선택적으로 자유 형식의 단일 힌트를 받습니다.
 - 힌트는 참고 값이지, 강제 파라미터가 아닙니다.
 - 힌트가 없으면 `git diff`/`git log`를 바탕으로 의도를 추론합니다.
 - 힌트와 변경사항이 충돌하면, 확인 질문을 통해 정확히 정리합니다.

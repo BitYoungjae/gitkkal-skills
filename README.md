@@ -14,6 +14,7 @@ Agent-agnostic Git workflow skills for branch naming, commit generation, and pul
 - `gitkkal-branch`: Create semantic branch names from code changes or a hint
 - `gitkkal-commit`: Create semantic commits in configured message style
 - `gitkkal-pr`: Create or update PRs from branch intent and recent changes
+- `gitkkal-ship`: Commit and open/update a PR in one pass by loading `gitkkal-commit` and `gitkkal-pr` in sequence
 
 ## Quick Start
 
@@ -24,6 +25,7 @@ gitkkal-init
 gitkkal-branch [description]
 gitkkal-commit [hint]
 gitkkal-pr [hint]
+gitkkal-ship [hint]
 ```
 
 Examples:
@@ -33,6 +35,7 @@ gitkkal-init
 gitkkal-branch add user authentication
 gitkkal-commit emphasize validation and tests
 gitkkal-pr focus on retry logic and error handling
+gitkkal-ship wrap up validation and tests
 ```
 
 ## Typical Workflow
@@ -45,6 +48,12 @@ gitkkal-pr focus on retry logic and error handling
    - `gitkkal-pr`
 4. Update the same PR after more commits:
    - `gitkkal-pr emphasize refactoring scope`
+
+Steps 2 and 3 can be run as a single command with `gitkkal-ship`, which loads both skills in sequence.
+
+## Hint-First Behavior
+
+- `gitkkal-branch`, `gitkkal-commit`, `gitkkal-pr`, and `gitkkal-ship` accept one optional free-form hint.
 
 ## Hint-First Behavior
 
